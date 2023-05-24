@@ -1,23 +1,27 @@
 #!/bin/bash
 
-# Define file paths
+# File paths
 file1="/path/to/file1.txt"
 file2="/path/to/file2.txt"
 
-# Perform MD5 checksum on the files
-md5_1=$(md5sum "$file1" | awk '{ print $1 }')
-md5_2=$(md5sum "$file2" | awk '{ print $1 }')
+# Calculate MD5 checksums
+md5sum1=$(md5sum "$file1" | awk '{print $1}')
+md5sum2=$(md5sum "$file2" | awk '{print $1}')
 
-# Compare the MD5 checksums
-if [ "$md5_1" != "$md5_2" ]; then
-    # Send email using the mail command
+# Compare MD5 checksums
+if [[ $md5sum1 != $md5sum2 ]]; then
+    # Email details
+    recipient="support@abc.com"
     subject="File mismatch"
-    body="There is a mismatch between $file1 and $file2. Please follow these steps to fix it: ..."
-    echo "$body" | mail -s "$subject" -S importance=high support@abc.com
-fi
+    body="The MD5 checksums of $file1 and $file2 do not match.\n\nPlease follow the steps below to fix it:\n\n1. Step 1\n2. Step 2\n3. Step 3"
 
     # Send email with high priority
-    echo -e "Subject: $subject\nX-Priority: 1 (Highest)\n\n$body" | sendmail -t "$recipient"
+    (echo "To: $recipient"
+    echo "Subject: $subject"
+    echo "X-Priority: 1 (Highest)"
+    echo
+    echo "$body") | sendmail -t
+fi
 
 
 * * * * * /path/to/script.sh >/dev/null 2>&1
