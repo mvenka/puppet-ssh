@@ -1,22 +1,19 @@
 #!/bin/bash
 
-# Set the file paths for comparison
+# Define file paths
 file1="/path/to/file1.txt"
 file2="/path/to/file2.txt"
 
-# Set the email details
-email_recipient="support@test.com"
-email_subject="File Difference Detected!"
-email_body="A difference has been detected between file1 and file2.\n\nSteps to resolve the issue:\n1. Step 1\n2. Step 2\n3. Step 3"
+# Perform MD5 checksum on the files
+md5_1=$(md5sum "$file1" | awk '{ print $1 }')
+md5_2=$(md5sum "$file2" | awk '{ print $1 }')
 
-# Compare the files
-if diff -q "$file1" "$file2" >/dev/null; then
-    # No difference found
-    echo "No difference found."
-else
-    # Difference found
-    echo "Difference found! Sending email to $email_recipient..."
-    echo -e "$email_body" | mail -s "$email_subject" -a "X-Priority: 1" "$email_recipient"
+# Compare the MD5 checksums
+if [ "$md5_1" != "$md5_2" ]; then
+    # Send email using the mail command
+    subject="File mismatch"
+    body="There is a mismatch between $file1 and $file2. Please follow these steps to fix it: ..."
+    echo "$body" | mail -s "$subject" -S importance=high support@abc.com
 fi
 
 
