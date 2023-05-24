@@ -16,5 +16,8 @@ if [ "$md5_1" != "$md5_2" ]; then
     echo "$body" | mail -s "$subject" -S importance=high support@abc.com
 fi
 
+    # Send email with high priority
+    echo -e "Subject: $subject\nX-Priority: 1 (Highest)\n\n$body" | sendmail -t "$recipient"
+
 
 * * * * * /path/to/script.sh >/dev/null 2>&1
